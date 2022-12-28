@@ -1,7 +1,11 @@
-from .views import SessionView
+from .views import SessionView, CreateSessionView, GetSession, JoinSession, UserInSession
 from django.urls import path
 
 urlpatterns = [
     #path('', main),
-    path('home', SessionView.as_view()) #from maine project file, and call main function from views.
+    path('sessions', SessionView.as_view()), #from maine project file, and call main function from views.
+    path('create', CreateSessionView.as_view()),
+    path('get-session', GetSession.as_view()),
+    path('join-session', JoinSession.as_view()),
+    path('user-in-session', UserInSession.as_view()),
 ]

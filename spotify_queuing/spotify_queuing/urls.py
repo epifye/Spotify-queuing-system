@@ -18,7 +18,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('spotify/', include('spotify_api.urls')) #any url send to the spotify file. Which has its own views file and its own url directory
+    path('spotify/', include('spotify_api.urls')), #any url send to the spotify file. Which has its own views file and its own url directory
+    path('', include('frontend.urls'))
 ]
 
 # 'domain.com/hello' comes to this file, and this file then directs to all the applications
