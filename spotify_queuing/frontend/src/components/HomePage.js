@@ -12,13 +12,13 @@ export default function HomePage() {
   const [sessionPassword, setSessionPassword] = useState(null);
 
   async function componentDidMount() {
+    console.log("TEST");
     fetch("/spotify/user-in-session")
       .then((response) => response.json())
       .then((data) => {
         setSessionPassword(event.target.value === data.password);
       });
   }
-
   const RenderHomePage = () => {
     return (
       <Grid container spacing={3}>
