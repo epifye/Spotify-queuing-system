@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from .serializers import SessionSerializer, CreateSessionSerializer
+from .serializers import SessionSerializer, CreateSessionSerializer, UpdateSessionSerializer
 from .models import Session
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
 
-
+## TODO ADD in the volume aspect for the session page and give control to the users
 # Create your views here.
 # Endpoint, location on the web_server to go to: /hello
 
@@ -85,3 +85,43 @@ class UserInSession(APIView):
             'password': self.request.session.get('session_password')
         }
         return JsonResponse(data, status = status.HTTP_200_OK)
+
+class LeaveSession(APIView):
+    def post(self, request, format = None): #post means changing info in the database
+        if 'session_password' in self.request.session:
+            self.request.session.pop('session_password') # remove code from session
+            host_id = self.request.session.session_key
+            session_results = Session.objects.filter(host = host_id)
+            if len(session_results) > 0 :
+                session = session_results[0]
+                session.delete()
+        return Response({'Message': 'Success'}, status=status.HTTP_200_OK)
+    
+
+class updateSession(APIView):
+    serializer_class = UpdateSessionSerializer
+    
+    def patch(self, request, format= None): ## patch another name for update
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+        
+        serializer = self.serializer_class(data = request.data)
+        if serializer.is_valid():
+            can_pause = serializer.data.get('can_pause')
+            votes_to_skip = serializer.data.get('votes_to_skip')
+            password = serializer.data.get('password')
+            
+            queryset = Session.objects.filter(password=password)
+            if not queryset.exists():
+                return Response({'msg':'Session not found'}, status = status.HTTP_404_NOT_FOUND)
+            session = queryset[0]
+            user_id = self.request.session.session_key
+            if session.host != user_id:
+                return Response({'msg':'You are not the host of the session' }, status = status.HTTP_403_FORBIDDEN)
+            
+            session.can_pause = can_pause
+            session.votes_to_skip = votes_to_skip
+            session.save(update_fields=['can_pause', 'votes_to_skip'])
+            return Response(SessionSerializer(session).data, status=status.HTTP_200_OK)
+            
+        return Response({'Bad Request' :'Invalid Data'}, status=status.HTTP_400_BAD_REQUEST)

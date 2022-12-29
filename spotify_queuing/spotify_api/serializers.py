@@ -13,4 +13,9 @@ class CreateSessionSerializer(serializers.ModelSerializer):
         model = Session
         fields = ('can_pause', 'votes_to_skip')
 
+class UpdateSessionSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(validators=[])
+    class Meta:
+        model = Session
+        fields = ('can_pause', 'votes_to_skip','password')
         
