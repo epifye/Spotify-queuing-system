@@ -90,5 +90,27 @@ class CurrentSong(APIView):
         }
         
         return Response(song, status= status.HTTP_200_OK)
+    
+class PauseSong(APIView):
+    def put(self, response, format=None):
+        session_password = self.request.session.get('session_password')
+        session = Session.objects.filter(password = session_password)[0]
+        if self.request.session.session_key == session.host or session.can_pause:
+            pause_song(self.request.session.session_key)
+            return Response({}, status = status.HTTP_204_NO_CONTENT)
         
+        
+        return Response({}, status=status.HTTP_403_FORBIDDEN)
+        
+
+class PlaySong(APIView):
+    def put(self, response, format=None):
+        session_password = self.request.session.get('session_password')
+        session = Session.objects.filter(password = session_password)[0]
+        if self.request.session.session_key == session.host or session.can_pause:
+            play_song(self.request.session.session_key)
+            return Response({}, status = status.HTTP_204_NO_CONTENT)
+        
+        
+        return Response({}, status=status.HTTP_403_FORBIDDEN)
         

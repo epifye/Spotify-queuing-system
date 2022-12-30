@@ -12,6 +12,23 @@ import { PlayArrow, SkipNext, Pause } from "@mui/icons-material";
 
 export default function MusicPlayer(props) {
   //const [songProgress, setSongProgress] = useState((props.time/props.duration) * 100)
+
+  const pauseSong = () => {
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch("/spotify/pause-song", requestOptions);
+  };
+
+  const playSong = () => {
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch("/spotify/play-song", requestOptions);
+  };
+
   return (
     <Card>
       <Grid container alignItems="center">
@@ -23,10 +40,14 @@ export default function MusicPlayer(props) {
             {props.title}
           </Typography>
           <Typography color="textSecondary" variant="subtitle1">
-            {props.artist}
+            {props.artists}
           </Typography>
           <div>
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                props.is_playing ? pauseSong() : playSong();
+              }}
+            >
               {props.is_playing ? <Pause /> : <PlayArrow />}
             </IconButton>
             <IconButton>
