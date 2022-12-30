@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Grid, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CreateSessionPage from "./CreateSessionPage";
+import MusicPlayer from "./MusicPlayer";
 
 export default function Session(props) {
   const navigate = useNavigate();
@@ -133,7 +134,7 @@ export default function Session(props) {
           Password: {password}
         </Typography>
       </Grid>
-      {String(song)}
+      <MusicPlayer {...song} />
       {isHost ? renderSettingsButton() : null}
       <Grid item xs={12} align="center">
         <Button
