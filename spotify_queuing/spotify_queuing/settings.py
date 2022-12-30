@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'spotify_api.apps.SpotifyApiConfig', ## This comes from apps.py in my spotify api app folder. This is the project, with the api being an app. is a class
     'rest_framework',
-    'frontend.apps.FrontendConfig'
+    'frontend.apps.FrontendConfig',
+    'spotify_webApi.apps.SpotifyWebapiConfig'
 ]
 
 MIDDLEWARE = [

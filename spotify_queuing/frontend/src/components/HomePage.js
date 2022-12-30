@@ -15,7 +15,7 @@ export default function HomePage() {
   const [sessionPassword, setSessionPassword] = useState(null);
 
   const RenderHomePage = () => {
-    fetch("/spotify/user-in-session")
+    fetch("/api/user-in-session")
       .then((response) => response.json())
       .then((data) => {
         setSessionPassword(data.password);

@@ -20,7 +20,7 @@ export default function SessionJoinPage() {
         password: sessionPassword,
       }),
     };
-    fetch("/spotify/join-session", requestOptions)
+    fetch("/api/join-session", requestOptions)
       .then((response) => {
         if (response.ok) {
           navigate("/session/" + sessionPassword);

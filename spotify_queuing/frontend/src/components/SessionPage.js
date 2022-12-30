@@ -11,10 +11,13 @@ export default function Session(props) {
   const [CanPause, setCanPause] = useState(false);
   const [isHost, setIsHost] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
+  const [song, setSong] = useState({});
   const { password } = useParams();
+  // const interval = useState("");
 
   const getSessionDetails = () => {
-    fetch("/spotify/get-session?password=" + password)
+    fetch("/api/get-session?password=" + password)
       .then((response) => {
         if (!response.ok) {
           navigate("/");
@@ -25,16 +28,60 @@ export default function Session(props) {
         setVotesToSkip(data.votes_to_skip);
         setCanPause(data.can_pause);
         setIsHost(data.is_host);
+        if (isHost) {
+          authenticateSpotify();
+        }
       });
   };
+
+  const authenticateSpotify = () => {
+    fetch("/spotify/is-authenticated")
+      .then((response) => response.json())
+      .then((data) => {
+        setSpotifyAuthenticated(data.status);
+        if (!data.status) {
+          fetch("/spotify/get-auth-url")
+            .then((response) => response.json())
+            .then((data) => {
+              window.location.replace(data.url);
+            });
+        }
+      });
+  };
+
+  const getCurrentSong = () => {
+    fetch("/spotify/current-song")
+      .then((response) => {
+        if (!response.ok) {
+          return {};
+        } else {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        setSong(data);
+        console.log(song);
+      });
+  };
+
+  // const componentDidMount = () => {
+
+  // };
+
+  // const componentWillUnmount = () => {
+  //   clearInterval(this.interval);
+  // };
+  //Calls
   getSessionDetails();
+  //getCurrentSong();
+  setInterval(getCurrentSong, 1000);
 
   const leaveButtonPressed = () => {
     const requestOptions = {
       method: "POST",
       header: { "Content-Type": "application/json" },
     };
-    fetch("/spotify/leave-session", requestOptions).then((_response) =>
+    fetch("/api/leave-session", requestOptions).then((_response) =>
       navigate("/")
     );
   };
@@ -88,7 +135,23 @@ export default function Session(props) {
           Password: {password}
         </Typography>
       </Grid>
+      {(song["tests"] = "test")}
+      {isHost ? renderSettingsButton() : null}
       <Grid item xs={12} align="center">
+        <Button
+          color="secondary"
+          variant="contained"
+          onClick={leaveButtonPressed}
+        >
+          Leave session
+        </Button>
+      </Grid>
+    </Grid>
+  );
+}
+
+{
+  /* <Grid item xs={12} align="center">
         <Typography variant="h6" component="h6">
           Votes: {votesToSkip}
         </Typography>
@@ -102,27 +165,5 @@ export default function Session(props) {
         <Typography variant="h6" component="h6">
           Host: {String(isHost)}
         </Typography>
-      </Grid>
-      {isHost ? renderSettingsButton() : null}
-      <Grid item xs={12} align="center">
-        <Button
-          color="secondary"
-          variant="contained"
-          onClick={leaveButtonPressed}
-        >
-          {" "}
-          Leave session
-        </Button>
-      </Grid>
-    </Grid>
-  );
-}
-
-{
-  /* <div>
-<h3>{password}</h3>
-<p>Votes: {votesToSkip}</p>
-<p>Can Pause: {String(CanPause)}</p>
-<p>Host: {String(isHost)}</p>
-</div> */
+      </Grid> */
 }

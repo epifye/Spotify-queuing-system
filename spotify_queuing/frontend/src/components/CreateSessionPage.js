@@ -53,7 +53,7 @@ export default function CreateSessionPage(props) {
         can_pause: CanPause,
       }),
     };
-    fetch("/spotify/create-session", requestOptions)
+    fetch("/api/create-session", requestOptions)
       .then((response) => response.json())
       .then((data) => navigate("/session/" + data.password));
   };
@@ -69,7 +69,7 @@ export default function CreateSessionPage(props) {
         password: props.password,
       }),
     };
-    fetch("/spotify/update-session", requestOptions).then((response) => {
+    fetch("/api/update-session", requestOptions).then((response) => {
       if (response.ok) {
         setSuccessMsg("Session updated successfully!");
       } else {
