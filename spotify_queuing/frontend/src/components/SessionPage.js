@@ -48,6 +48,17 @@ export default function Session(props) {
       });
   };
 
+  getSessionDetails();
+
+  useEffect(() => {
+    console.log(`initializing interval`);
+    const interval = setInterval(() => {
+      getCurrentSong();
+    }, 1000);
+    console.log(`clearing interval`);
+    return () => clearInterval(interval);
+  });
+
   const getCurrentSong = () => {
     fetch("/spotify/current-song")
       .then((response) => {
@@ -62,17 +73,6 @@ export default function Session(props) {
         console.log(song);
       });
   };
-
-  getSessionDetails();
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getCurrentSong();
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  //getCurrentSong();
-  //setInterval(getCurrentSong(), 1000);
 
   const leaveButtonPressed = () => {
     const requestOptions = {
@@ -133,7 +133,7 @@ export default function Session(props) {
           Password: {password}
         </Typography>
       </Grid>
-      {(song["tests"] = "test")}
+      {String(song)}
       {isHost ? renderSettingsButton() : null}
       <Grid item xs={12} align="center">
         <Button
