@@ -55,7 +55,9 @@ export default function CreateSessionPage(props) {
     };
     fetch("/api/create-session", requestOptions)
       .then((response) => response.json())
-      .then((data) => navigate("/session/" + data.password));
+      .then((data) => {
+        navigate("/session/" + data.password);
+      });
   };
 
   const handleUpdateButtonPressed = () => {
